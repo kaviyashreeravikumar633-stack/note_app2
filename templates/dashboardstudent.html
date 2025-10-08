@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dashboard student</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+
+    <header class="main-header">
+        <div class="logo">NoteApp</div> <div class="header-actions">
+           
+        </div>
+        <nav class="nav-links">
+            <button class="nav-button college-button">
+                <a href="{{ url_for('student') }}">College</a>
+            </button>
+            <button class="nav-button logout-button">
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </button>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="dashboard-top-bar">
+            <h2>My Notes</h2>
+            <div class="action-buttons">
+                <a href="{{ url_for('scan_qr') }}">
+                    <button class="cta-button scan-qr-button"> Scan QR Code</button>
+                </a>
+                <a href="{{ url_for('add_note', student_id=student_id) }}">
+                    <button class="cta-button add-note-button"> Add Note</button>
+                </a>
+            </div>
+        </div>
+
+        <ul class="notes-grid">
+            {% for note in notes %}
+                <li class="note-card note-color-{{ loop.index % 4 + 1 }}"> 
+                    <div class="note-title-area">
+                        <strong>{{ note[1] }}</strong>
+                    </div>
+                    <div class="note-content-preview">
+                        {{ note[3] | truncate(100) }} </div>
+
+                    <div class="note-actions">
+                        <a href="{{ url_for('view_note', note_id=note[0]) }}"><button class="action-view">View</button></a>
+                        <a href="{{ url_for('edit_note', note_id=note[0]) }}"><button class="action-edit">Edit</button></a>
+                        <form method="POST" action="{{ url_for('delete_note_student', note_id=note[0],student_id=student_id) }}" class="delete-form">
+                            <button type="submit" class="action-delete" onclick="return confirm('Are you sure you want to delete this note?');">Delete</button>
+                        </form>
+                    </div>
+                    {% if note[4] %}
+                        <img src="{{ url_for('static', filename=note[4]) }}" class="note-image-preview">
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+  </body>
+</html>

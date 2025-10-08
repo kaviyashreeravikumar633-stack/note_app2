@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Note</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="note-editor-container">
+        <header class="editor-header">
+            <a href="{{ url_for('dashboardstud', student_id=note[3]) }}" class="back-link">
+                ← Back to Dashboard
+            </a>
+
+            <h2>Edit Note</h2>
+
+            <div class="editor-actions">
+                 <button type="submit" form="noteForm" class="editor-button save-button">Update Note</button>
+            </div>
+        </header>
+
+        <form method="POST" action="{{ url_for('update_note', note_id=note[0]) }}" id="noteForm" class="note-form">
+            <input type="hidden" name="student_id" value="{{ note[3] }}">
+
+            <input type="text" name="title" value="{{ note[1] }}" class="note-title-input" required>
+
+            <div class="content-editor-area">
+                
+
+                <textarea name="content" rows="10" class="note-content-textarea" required>{{ note[2] }}</textarea>
+            </div>
+
+            </form>
+    </div>
+</body>
+</html>

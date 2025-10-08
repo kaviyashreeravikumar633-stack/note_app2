@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App - Sign In</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"> 
+  </head>
+  <body>
+    <div class="signin-container">
+        <div class="signin-card">
+            <h1>Welcome back</h1>
+            <p>Sign in to access your notes and continue learning</p>
+
+            <form method="POST" action="{{ url_for('signi') }}" class="signin-form">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your name" required/>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required/>
+
+                <label for="role"> Role </label>
+                <select id="role" name="role" required>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                </select>
+
+                <button type="submit" class="cta-button">Sign in</button>
+            </form>
+
+            <div class="links">
+                <a href="#">Forgot your password?</a>
+                <a href="{{url_for ('signp') }}" class="signup-link">Don't have an account? <span>Sign up here</span></a>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

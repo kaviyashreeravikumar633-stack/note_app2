@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"> 
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header class="main-header">
+            <div class="app-logo">NoteApp (Teacher)</div>
+            <div class="header-actions">
+                <form method="POST" action="{{url_for('addsubject')}}" class="add-subject-form">
+                    <input type="text" name="subject_name" placeholder="New Subject Name" required class="input-field">
+                    <button type="submit" class="add-subject-btn">+ Add Subject</button>
+                </form>
+
+                <button class="logout-btn">
+                   <a href="{{ url_for('logout') }}">Logout</a>
+               </button>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <h2 class="section-title">Your Subjects</h2>
+
+            <div class="subject-grid">
+
+              {% for id, name in subjects %}
+                <div class="subject-card card-style-{{ loop.index % 3 }}"> <div class="subject-card-header">
+                        <span class="subject-card-icon">📚</span>
+
+                        <form method="POST" action="{{ url_for('deletesubject', subject_id=id) }}" class="delete-form">
+                            <button type="submit" class="delete-btn" title="Delete Subject">✕</button>
+                        </form>
+                    </div>
+
+                    <h3 class="subject-title">{{ name }}</h3>
+
+                    <div class="subject-meta">
+                        <span class="meta-item">
+                            <i class="icon-lessons">📝</i>
+                            Units Available
+                        </span>
+                    </div>
+
+                    <a href="{{ url_for('units',subject_id=id) }}" class="explore-btn">
+                        Explore Units
+                    </a>
+                </div>
+              {% endfor %}
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

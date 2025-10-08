@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Units</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"> 
+</head>
+<body>
+
+    <div class="dashboard-container units-page-container">
+        <header class="main-header">
+            <a href="{{ url_for('dashboardteach') }}" class="back-link app-logo">
+                ← Back to Subjects
+            </a>
+
+            <div class="header-actions">
+                <form method="POST" action="{{ url_for('addunits', subject_id=subject_id) }}" class="add-subject-form">
+                    <input type="text" name="unitname" placeholder="New Unit Name" required class="input-field">
+                    <button type="submit" class="add-subject-btn">+ Add Unit</button>
+                </form>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            
+
+            <div class="subject-grid unit-grid">
+
+              {% for id, unit in Units %}
+                <div class="subject-card card-style-{{ loop.index % 3 }}"> 
+                    <div class="subject-card-header">
+                        <span class="subject-card-icon">📄</span>
+
+                        <form method="POST" action="{{ url_for('deleteunits', unit_id=id, subject_id=subject_id) }}" class="delete-form">
+                            <button type="submit" class="delete-btn" title="Delete Unit">✕</button>
+                        </form>
+                    </div>
+
+                    <h3 class="subject-title">{{ unit }}</h3>
+
+                    <div class="subject-meta">
+                        <a href="{{ url_for('notes', unit_id=id) }}" class="explore-btn">
+                            View Notes
+                        </a>
+                    </div>
+                </div>
+              {% endfor %}
+
+            </div>
+
+            <h2 class="section-title upload-section-title">Upload New Notes</h2>
+            <div class="upload-notes-box action-card">
+                <form action="{{ url_for('upload_note', subject_id=subject_id) }}" method="POST" enctype="multipart/form-data" class="upload-form">
+
+                    <div class="upload-form-inputs">
+                        <div class="form-group">
+                            <label for="unit_id" class="form-label">Select Unit:</label>
+                            <select name="unit_id" required class="select-field">
+                                {% for id, unit in Units %}
+                                    <option value="{{ id }}">{{ unit }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="file" class="form-label">Choose File (PDF, DOCX, etc.):</label>
+                            <input type="file" name="file" required class="file-input">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="primary-btn upload-btn">Upload Note</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

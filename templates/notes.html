@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notes for {{ unit_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"> 
+</head>
+<body>
+
+    <div class="page-container notes-page">
+        <header class="editor-header view-header">
+            <a href="{{ url_for('units', subject_id=subject_id) }}" class="back-link">
+                ← Back to Units
+            </a>
+            <h1 class="page-title">Notes for {{ unit_name }}</h1>
+            <div class="view-actions"></div>
+        </header>
+
+        <main class="notes-main-content">
+
+            <h2 class="section-title">Available Resources</h2>
+
+            <div class="notes-list-grid">
+
+                {% for note_id, note in notes_data %}
+                    <div class="note-file-card">
+
+                        <div class="note-file-info">
+                            <span class="file-icon">📄</span>
+                            <span class="file-name">{{ note }}</span>
+                        </div>
+
+                        <div class="note-file-actions">
+                            <a href="{{ url_for('static', filename='uploads/' ~ note) }}" target="_blank" class="action-btn view-btn" title="View Document">
+                                View
+                            </a>
+
+                            <a href="{{ url_for('static', filename='uploads/' ~ note) }}" download class="action-btn download-btn" title="Download Document">
+                                Download
+                            </a>
+
+                            <form method="POST" action="{{ url_for('delete_note', note_id=note_id, unit_id=unit_id) }}" class="delete-note-form">
+                                <button type="submit" class="action-btn delete-btn-small" title="Delete Note">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+
+            {% if not notes_data %}
+                <p class="empty-state">No notes have been uploaded for this unit yet.</p>
+            {% endif %}
+
+        </main>
+    </div>
+</body>
+</html>

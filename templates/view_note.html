@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ note[0] if note[0] else "Note" }} - View</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"> </head>
+<body>
+
+    <div class="note-viewer-container"> <header class="editor-header view-header">
+            <a href="#" class="back-link">
+                ← Back to Dashboard
+            </a>
+            <h2 class="note-title-view">{{ note[0] if note[0] else "Untitled Note" }}</h2>
+            <div class="view-actions"></div> </header>
+
+        <div class="note-content-area"> <p class="note-metadata"><em>Created: {{ note[2] if note[2] else "N/A" }}</em></p>
+            <div class="note-body">
+                <p>{{ note[1] }}</p>
+            </div>
+        </div>
+
+        <div class="ai-tools-section">
+            <h3>AI Tools</h3>
+
+            <div class="ai-query-area">
+                <button id="summarizeBtn" class="ai-tool-button summarize-button">Summarize</button>
+
+                <div class="ask-question-group">
+                    <input type="text" id="questionInput" class="question-input" placeholder="Ask a question based on the note">
+                    <button id="askBtn" class="ai-tool-button ask-button">Ask</button>
+                </div>
+            </div>
+
+            <div id="ai_output" class="ai-output-box"></div> 
+        </div>
+    </div>
+
+    <script>
+        const noteId = {{ note_id }};
+
+        document.getElementById("summarizeBtn").addEventListener("click", () => {
+            fetch(`/ai_chat/${noteId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "summary" })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("ai_output").innerHTML = `<h4>Summary:</h4><p>${data.result}</p>`;
+            })
+            .catch(err => {
+                document.getElementById("ai_output").innerHTML = `<p style="color:red;">Error: ${err}</p>`;
+            });
+        });
+
+        document.getElementById("askBtn").addEventListener("click", () => {
+            const question = document.getElementById("questionInput").value;
+            if (!question.trim()) return alert("Please enter a question.");
+
+            fetch(`/ai_chat/${noteId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "question", query: question })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("ai_output").innerHTML = `<h4>Answer:</h4><p>${data.result}</p>`;
+            })
+            .catch(err => {
+                document.getElementById("ai_output").innerHTML = `<p style="color:red;">Error: ${err}</p>`;
+            });
+        });
+    </script>
+
+</body>
+</html>

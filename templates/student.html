@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notes app</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"> </head>
+<body>
+
+    <div class="dashboard-container"> <header class="main-header">
+            <div class="app-logo">NoteApp (Student)</div>
+            <div class="header-actions">
+                </div>
+        </header>
+
+        <main class="dashboard-main"> <h2 class="section-title">Your College Notes</h2>
+
+            <div class="subject-grid"> {% for id, name in subjects %}
+                <div class="subject-card card-style-{{ loop.index % 3 }}">
+                    <div class="subject-card-header">
+                        <span class="subject-card-icon">📚</span>
+                        <div></div> 
+                    </div>
+
+                    <h3 class="subject-title">{{ name }}</h3>
+
+                    <div class="subject-meta">
+                        <span class="meta-item">Available Units</span>
+                    </div>
+
+                    <a href="{{ url_for('unitsstud',subject_id=id) }}" class="explore-btn">
+                        View Units
+                    </a>
+                </div>
+              {% endfor %}
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

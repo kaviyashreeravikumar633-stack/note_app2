@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scan QR Code</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+  <h1>Scan QR Code</h1>
+
+  <!-- Camera scanning -->
+  <div id="reader" style="width:500px;"></div>
+
+  <script>
+    let hasScanned = false; // ✅ prevent multiple redirects
+
+    function onScanSuccess(decodedText, decodedResult) {
+      if (hasScanned) return; // ignore repeated detections
+      hasScanned = true; // mark as scanned
+
+      console.log(`QR scanned: ${decodedText}`);
+
+      // Stop camera before redirecting
+      html5QrcodeScanner.clear()
+        .then(() => {
+          window.location.href = decodedText; // redirect to import_note
+        })
+        .catch(err => {
+          console.error("Error stopping scanner:", err);
+          window.location.href = decodedText;
+        });
+    }
+
+    function onScanFailure(error) {
+      console.warn(`QR scan error: ${error}`);
+    }
+
+    const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+      fps: 10,
+      qrbox: 250
+    });
+
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+  </script>
+
+</body>
+</html>

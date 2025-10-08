@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Units</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}""> 
+  </head>
+  <body>
+
+    <div class="page-container units-page">
+        <header class="editor-header view-header">
+            <a href="{{ url_for('dashboardstud') }}" class="back-link">
+                ← Back to Subjects
+            </a>
+            <h1 class="page-title">Available Units</h1>
+            <div class="view-actions"></div>
+        </header>
+
+        <main class="units-main-content">
+
+            <section class="existing-units-section">
+                <h2 class="section-title">Units Available</h2>
+
+                <div class="unit-list-grid">
+                  {% for id, unit in Units %}
+                    <div class="unit-card student-unit-card">
+                      <a href="{{ url_for('notesstud', unit_id=id) }}" class="unit-name-link">{{ unit }}</a>
+                    </div>
+                  {% endfor %}
+                </div>
+            </section>
+
+            {% if not Units %}
+                <p class="empty-state">No units have been added to this subject yet.</p>
+            {% endif %}
+
+        </main>
+    </div>
+  </body>
+</html>

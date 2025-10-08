@@ -1,0 +1,1166 @@
+/* --- Color Variables (Based on your palette) --- */
+:root {
+    --color-primary-accent: #BBA0BA; /* Muted Purple for CTA/Save */
+    --color-secondary-accent: #AFA4CA; /* Primary Purple for hover/links/icons */
+    --color-light-accent: #E5C3D8; /* Lightest Pink for subtle backgrounds/hovers */
+    --color-text-dark: #2C2C2C; /* Deep Charcoal for primary text */
+    --color-text-light: #5A5A5A; /* Gray for paragraphs/subtle links */
+    --color-background: #F4F4F9; /* Very light gray page background */
+    --color-card-background: #FFFFFF; /* Pure White card background */
+
+    /* Note Card Colors (Used for the top color strip) */
+    --note-color-1: #E5C3D8;
+    --note-color-2: #DBBCD4;
+    --note-color-3: #BBA0BA;
+    --note-color-4: #AFA4CA;
+    --note-color-5: #CBDCDE;
+}
+
+/* --- Global Base Styles --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text-dark);
+    margin: 0;
+    padding: 0; 
+    box-sizing: border-box;
+}
+
+/* Base link and button reset */
+a { text-decoration: none; color: inherit; }
+button { 
+    cursor: pointer; 
+    border: none;
+    font-family: inherit;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+
+/* ----------------------------------------------------------------------- */
+/* --- 1. SIGN-IN/SIGN-UP STYLES (RESTORED ORIGINAL DESIGN) --- */
+/* ----------------------------------------------------------------------- */
+
+/* This layout targets only the sign-in/up pages for centering. */
+.signin-container {
+    padding: 20px 10px; /* Added padding for better mobile view */
+    width: 100%;
+    max-width: 400px;
+
+    /* Centering the card for sign-in/up pages only (Original working method) */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.signin-card {
+    background-color: var(--color-card-background);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.signin-card h1 {
+    margin-bottom: 5px;
+    font-size: 2em;
+    font-weight: 600;
+}
+.signin-card h3 {
+    margin: 10px 0 30px 0;
+    font-size: 1.5em;
+    font-weight: 500;
+}
+.signin-card p {
+    color: var(--color-text-light);
+    margin-bottom: 30px;
+}
+
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+label {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--color-text-dark);
+}
+
+input[type="text"],
+input[type="password"],
+select {
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+    background-color: var(--color-card-background);
+}
+
+input:focus,
+select:focus {
+    border-color: var(--color-secondary-accent);
+    outline: none;
+}
+
+.links {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+}
+
+/* General CTA Button Style (Used in Sign-In/Up and Dashboard) */
+.cta-button {
+    background-color: var(--color-primary-accent);
+    color: var(--color-card-background);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 25px;
+}
+.cta-button:hover {
+    background-color: var(--color-secondary-accent); 
+}
+
+
+/* ----------------------------------------------------------------------- */
+/* --- 2. DASHBOARD STYLES --- */
+/* ----------------------------------------------------------------------- */
+
+/* Top Header Bar (Simplified: removed Google/Search styles) */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: var(--color-card-background);
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--color-primary-accent);
+    letter-spacing: -0.5px;
+}
+
+/* The space where search/google was, now removed. */
+.header-actions {
+    display: none; 
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+.nav-links button {
+    padding: 8px 15px;
+    border-radius: 8px;
+    background-color: transparent;
+    border: 1px solid var(--color-secondary-accent);
+    color: var(--color-secondary-accent);
+    margin: 0; /* Remove margin from previous version */
+}
+.nav-links button a {
+    display: block; 
+}
+.nav-links button:hover {
+    background-color: var(--color-light-accent);
+}
+
+/* Dashboard Content */
+.dashboard-container {
+    padding: 20px 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-top-bar h2 {
+    font-size: 1.8em;
+    color: var(--color-text-dark);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons .cta-button {
+    padding: 10px 18px;
+    font-size: 1em;
+    margin-top: 0; /* Override the margin-top from signin button style */
+}
+
+/* Notes Grid */
+.notes-grid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.note-card {
+    background-color: var(--color-card-background);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+}
+
+.note-card strong {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    display: block;
+    color: var(--color-text-dark);
+    padding-top: 5px; 
+}
+
+.note-content-preview {
+    font-size: 0.9em;
+    color: var(--color-text-light);
+    flex-grow: 1;
+    margin-bottom: 15px;
+}
+
+.note-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center; /* Align QR code vertically with buttons */
+    margin-top: auto;
+}
+
+.note-actions button, .note-actions a button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    color: var(--color-card-background);
+}
+
+.action-view { background-color: var(--note-color-4); }
+.action-edit { background-color: var(--note-color-3); }
+.action-delete { background-color: #d9534f; }
+
+/* QR Code Styling (small size next to delete) */
+.note-image-preview {
+    width: 70px; /* Small size as requested */
+    height: 70px;
+    margin-left: auto; /* Push the QR code to the right of the action buttons */
+    border: 1px solid #eee;
+    padding: 2px;
+    border-radius: 4px;
+}
+
+/* Note Card Color Covers */
+.note-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    border-radius: 10px 10px 0 0;
+}
+
+.note-color-1::before { background-color: var(--note-color-1); }
+.note-color-2::before { background-color: var(--note-color-2); }
+.note-color-3::before { background-color: var(--note-color-3); }
+.note-color-4::before { background-color: var(--note-color-4); }
+.note-color-5::before { background-color: var(--note-color-5); }
+
+
+/* ----------------------------------------------------------------------- */
+/* --- 3. ADD/EDIT NOTE STYLES (No changes needed, already correct) --- */
+/* ----------------------------------------------------------------------- */
+
+.note-editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: var(--color-card-background);
+    border-bottom: 1px solid #ddd;
+    flex-shrink: 0;
+}
+
+.back-link {
+    color: var(--color-text-light);
+    font-size: 1em;
+}
+
+.editor-header h2 {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    margin: 0;
+}
+
+.editor-actions .save-button {
+    background-color: var(--color-secondary-accent);
+    color: var(--color-card-background);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.note-form {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+    flex-grow: 1;
+}
+
+.note-title-input {
+    font-size: 2.2em;
+    font-weight: 700;
+    border: none;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    color: var(--color-text-dark);
+    background: transparent;
+}
+
+.content-editor-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--color-card-background);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.editor-toolbar {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    background-color: #f8f8f8;
+    flex-shrink: 0;
+}
+
+.toolbar-icon {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-weight: bold;
+    color: var(--color-text-dark);
+    background-color: var(--color-card-background);
+}
+
+.note-content-textarea {
+    flex-grow: 1;
+    border: none;
+    padding: 20px;
+    font-size: 1.1em;
+    line-height: 1.6;
+    resize: none;
+    background: transparent;
+}
+.note-content-textarea:focus {
+    outline: none;
+}
+/* --- VIEW NOTE PAGE STYLES --- */
+
+.note-viewer-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0;
+}
+
+/* Header bar styling is consistent with editor/dashboard headers */
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: var(--color-card-background);
+    border-bottom: 1px solid #ddd;
+    flex-shrink: 0;
+}
+
+.back-link {
+    color: var(--color-text-light);
+    font-size: 1em;
+}
+
+.note-title-view {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.note-content-area {
+    padding: 20px 30px;
+    background-color: var(--color-card-background);
+    overflow-y: auto; 
+    flex-grow: 1; 
+}
+
+.note-metadata {
+    font-size: 0.9em;
+    color: var(--color-text-light);
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.note-body p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: var(--color-text-dark);
+    white-space: pre-wrap;
+}
+
+/* --- AI Tools Section --- */
+.ai-tools-section {
+    flex-shrink: 0; 
+    padding: 20px 30px;
+    background-color: var(--color-background); 
+    border-top: 1px solid #ddd;
+}
+
+.ai-tools-section h3 {
+    font-size: 1.2em;
+    color: var(--color-text-dark);
+    margin-bottom: 15px;
+}
+
+.ai-query-area {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap; 
+}
+
+/* Base button style for AI tools */
+.ai-tool-button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    white-space: nowrap; 
+    transition: background-color 0.2s;
+}
+
+/* Summarize Button Coloring */
+.summarize-button {
+    background-color: var(--color-secondary-accent); /* Primary Purple */
+    color: var(--color-card-background); 
+}
+.summarize-button:hover {
+    background-color: var(--color-primary-accent); 
+}
+
+.ask-question-group {
+    display: flex;
+    flex-grow: 1;
+    gap: 10px;
+    min-width: 50%; 
+}
+
+.question-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+}
+.question-input:focus {
+    border-color: var(--color-secondary-accent);
+    outline: none;
+}
+
+/* Ask Button Coloring */
+.ask-button {
+    background-color: var(--color-text-dark); /* Deep Charcoal */
+    color: var(--color-card-background);
+}
+.ask-button:hover {
+    background-color: var(--color-text-light);
+}
+
+/* AI Output Box Styling */
+.ai-output-box {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid var(--color-light-accent);
+    border-radius: 8px;
+    background-color: var(--color-card-background);
+    min-height: 50px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.ai-output-box h4 {
+    margin: 0 0 10px 0;
+    color: var(--color-secondary-accent);
+}
+
+.loading-state {
+    color: var(--color-text-light);
+    font-style: italic;
+}
+/* --- TEACHER DASHBOARD STYLES --- */
+
+.dashboard-container {
+    min-height: 100vh;
+    background-color: var(--color-background); /* Light background for the dashboard */
+}
+
+/* --- Header Styling (Consistent with NoteApp header) --- */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: var(--color-card-background); /* White/Light header background */
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap; /* Good for responsiveness */
+}
+
+.app-logo {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--color-primary-accent); /* Use your primary accent color */
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Logout Button Styling */
+.logout-btn {
+    padding: 8px 15px;
+    background: none;
+    border: 1px solid var(--color-text-light);
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+.logout-btn a {
+    text-decoration: none;
+    color: var(--color-text-dark);
+}
+.logout-btn:hover {
+    background-color: var(--color-light-accent);
+}
+
+
+/* --- Add Subject Form Styling --- */
+.add-subject-form {
+    display: flex;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+}
+
+.add-subject-form .input-field {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    min-width: 150px;
+}
+
+.add-subject-btn {
+    background-color: var(--color-secondary-accent); /* Use a bright color */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.add-subject-btn:hover {
+    background-color: var(--color-primary-accent);
+}
+
+/* --- Main Content Layout --- */
+.dashboard-main {
+    padding: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 1.8em;
+    margin-bottom: 25px;
+    color: var(--color-text-dark);
+}
+
+/* --- Subject Cards Grid (Matching the reference picture) --- */
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.subject-card {
+    background-color: var(--color-card-background);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+    position: relative;
+    transition: transform 0.2s;
+}
+.subject-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.subject-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.subject-card-icon {
+    font-size: 2em;
+    line-height: 1;
+}
+
+.subject-title {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin: 0 0 10px 0;
+}
+
+.subject-meta {
+    font-size: 0.9em;
+    color: var(--color-text-light);
+    margin-bottom: 20px;
+}
+
+.explore-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    background-color: var(--color-secondary-accent); /* Button Color */
+    color: white;
+    text-decoration: none;
+    width: 90%;
+    margin-top: 10px;
+}
+.explore-btn:hover {
+    background-color: var(--color-primary-accent);
+}
+
+/* Delete Button Styling */
+.delete-form {
+    line-height: 1;
+}
+.delete-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-light);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.delete-btn:hover {
+    color: red;
+}
+
+
+/* --- Card Color Variants (Matching College Notes style) --- */
+/* The loop index in the HTML applies card-style-0, card-style-1, card-style-2, etc. */
+
+/* Card Style 0 (Example: Math/Purple-ish from reference) */
+.subject-card.card-style-0 {
+    border-left: 5px solid #8A64D8; /* Deep Purple */
+    box-shadow: 0 4px 10px rgba(138, 100, 216, 0.15);
+}
+.subject-card.card-style-0 .subject-card-icon {
+    color: #8A64D8;
+}
+
+/* Card Style 1 (Example: Physics/Pink-ish from reference) */
+.subject-card.card-style-1 {
+    border-left: 5px solid #D864D8; /* Pink/Magenta */
+    box-shadow: 0 4px 10px rgba(216, 100, 216, 0.15);
+}
+.subject-card.card-style-1 .subject-card-icon {
+    color: #D864D8;
+}
+
+/* Card Style 2 (Example: Chemistry/Green-ish from reference) */
+.subject-card.card-style-2 {
+    border-left: 5px solid #64D88A; /* Green */
+    box-shadow: 0 4px 10px rgba(100, 216, 138, 0.15);
+}
+.subject-card.card-style-2 .subject-card-icon {
+    color: #64D88A;
+}
+/* --- NOTES PAGE STYLES --- */
+
+.notes-page {
+    background-color: var(--color-background);
+}
+
+.notes-main-content {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 1.8em;
+    margin-bottom: 25px;
+    color: var(--color-text-dark);
+}
+
+.notes-list-grid {
+    display: grid;
+    gap: 15px;
+    /* Use a single, wide column for file listings */
+    grid-template-columns: 1fr; 
+}
+
+.note-file-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-card-background);
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid var(--color-primary-accent);
+    transition: transform 0.1s;
+}
+
+.note-file-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.note-file-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    min-width: 0; /* Ensures the file name doesn't overflow */
+}
+
+.file-icon {
+    font-size: 1.5em;
+    margin-right: 15px;
+    color: var(--color-secondary-accent);
+}
+
+.file-name {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: var(--color-text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Handles long file names */
+}
+
+/* --- Action Buttons --- */
+.note-file-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0; /* Prevents action buttons from being squished */
+}
+
+.action-btn {
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: none;
+    font-size: 0.95em;
+}
+
+.view-btn {
+    background-color: var(--color-secondary-accent);
+    color: white;
+}
+.view-btn:hover {
+    background-color: var(--color-primary-accent);
+}
+
+.download-btn {
+    background-color: #ccc;
+}
+.download-btn:hover {
+    background-color: var(--color-text-light);
+    color: var(--color-text-dark);
+}
+
+.delete-note-form {
+    display: inline;
+}
+.delete-btn-small {
+    background-color: #d9534f; /* Soft Red */
+    color: white;
+}
+.delete-btn-small:hover {
+    background-color: #c9302c;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-light);
+    font-style: italic;
+    font-size: 1.1em;
+    background-color: var(--color-card-background);
+    border-radius: 10px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .note-file-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .note-file-actions {
+        width: 100%;
+        justify-content: space-around;
+    }
+    .action-btn {
+        flex-grow: 1;
+        text-align: center;
+    }
+}
+/* --- STUDENT SUBJECTS DASHBOARD (DASHBOARDSTUD) STYLES --- */
+
+/* Reusing the main container and header styles from the teacher dashboard */
+.dashboard-container {
+    min-height: 100vh;
+    background-color: var(--color-background);
+}
+
+/* Reusing .main-header, .app-logo, .header-actions, and .logout-btn styles */
+
+.dashboard-main {
+    padding: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 1.8em;
+    margin-bottom: 25px;
+    color: var(--color-text-dark);
+}
+
+/* --- Subject Cards Grid (Identical to Teacher Dashboard) --- */
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.subject-card {
+    background-color: var(--color-card-background);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+    position: relative;
+    transition: transform 0.2s;
+}
+.subject-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.subject-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.subject-card-icon {
+    font-size: 2em;
+    line-height: 1;
+}
+
+.subject-title {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin: 0 0 10px 0;
+}
+
+.subject-meta {
+    font-size: 0.9em;
+    color: var(--color-text-light);
+    margin-bottom: 20px;
+}
+
+/* The anchor tag in the li is styled as the card's action button */
+.explore-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    background-color: var(--color-secondary-accent);
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    margin-top: 10px;
+}
+.explore-btn:hover {
+    background-color: var(--color-primary-accent);
+}
+
+/* --- Card Color Variants (Must be copied from Teacher Dashboard CSS) --- */
+.subject-card.card-style-0 {
+    border-left: 5px solid #8A64D8;
+    box-shadow: 0 4px 10px rgba(138, 100, 216, 0.15);
+}
+.subject-card.card-style-0 .subject-card-icon {
+    color: #8A64D8;
+}
+
+.subject-card.card-style-1 {
+    border-left: 5px solid #D864D8;
+    box-shadow: 0 4px 10px rgba(216, 100, 216, 0.15);
+}
+.subject-card.card-style-1 .subject-card-icon {
+    color: #D864D8;
+}
+
+.subject-card.card-style-2 {
+    border-left: 5px solid #64D88A;
+    box-shadow: 0 4px 10px rgba(100, 216, 138, 0.15);
+}
+.subject-card.card-style-2 .subject-card-icon {
+    color: #64D88A;
+}
+
+/* Fallback/Empty State Style */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-light);
+    font-style: italic;
+    font-size: 1.1em;
+}
+/* --- STUDENT UNITS PAGE STYLES --- */
+
+.units-page {
+    background-color: var(--color-background);
+}
+
+.units-main-content {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.unit-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+/* Base style for student unit card (reuses unit-card style but is simplified) */
+.unit-card.student-unit-card {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--color-card-background);
+    padding: 18px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid var(--color-secondary-accent);
+    transition: all 0.2s ease-in-out;
+}
+
+.unit-card.student-unit-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-left-color: var(--color-primary-accent);
+}
+
+.unit-card.student-unit-card .unit-name-link {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    text-decoration: none;
+    flex-grow: 1;
+}
+
+.unit-card.student-unit-card .unit-name-link:hover {
+    color: var(--color-primary-accent);
+}
+/* Base button style is reused: .action-btn */
+
+.action-btn {
+    padding: 10px 18px; 
+    border-radius: 8px; 
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    font-size: 0.95em;
+    box-shadow: none;
+}
+
+/* 1. View Button (Standard Accent) */
+.view-btn {
+    background-color: var(--color-secondary-accent);
+    color: white;
+}
+.view-btn:hover {
+    background-color: var(--color-primary-accent);
+    transform: translateY(-1px);
+}
+
+/* 2. Download Button (The Unique, Elevated Style) */
+.download-btn {
+    background: linear-gradient(135deg, var(--color-primary-accent) 5%, #5e35b1 95%); 
+    color: white;
+    font-weight: 700; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+}
+.download-btn:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.03); 
+    background: linear-gradient(135deg, #5e35b1 5%, var(--color-primary-accent) 95%); 
+}
+
+/* Mobile Responsiveness (Reuses the existing media query) */
+@media (max-width: 650px) {
+    .note-file-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px;
+    }
+    .note-file-actions {
+        width: 100%;
+        justify-content: space-around;
+    }
+    .action-btn {
+        flex-grow: 1;
+        text-align: center;
+    }
+}
+
+
+.empty-state {
+    /* Reuses the empty state style */
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-light);
+    font-style: italic;
+    font-size: 1.1em;
+    background-color: var(--color-card-background);
+    border-radius: 10px;
+}
+/* --- STUDENT UNITS PAGE STYLES (MATCHING TEACHER LAYOUT) --- */
+
+.units-page {
+    /* Uses the same background as the teacher's page */
+    background-color: var(--color-background);
+}
+
+.units-main-content {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    /* Uses the large, separated title style */
+    font-size: 1.8em;
+    margin-bottom: 25px;
+    color: var(--color-text-dark);
+}
+
+.unit-list-grid {
+    /* Ensures the cards use the desired grid layout */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+/* Base style for student unit card - clean and focused */
+.unit-card.student-unit-card {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--color-card-background);
+    padding: 18px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid var(--color-secondary-accent); /* Primary accent border */
+    transition: all 0.2s ease-in-out;
+}
+
+.unit-card.student-unit-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-left-color: var(--color-primary-accent); /* Highlight on hover */
+}
+
+.unit-card.student-unit-card .unit-name-link {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    text-decoration: none;
+    flex-grow: 1;
+}
+
+.unit-card.student-unit-card .unit-name-link:hover {
+    color: var(--color-primary-accent);
+}
+
+.empty-state {
+    /* Reuses the empty state style */
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-light);
+    font-style: italic;
+    font-size: 1.1em;
+    background-color: var(--color-card-background);
+    border-radius: 10px;
+}
