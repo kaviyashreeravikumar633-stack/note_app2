@@ -461,7 +461,7 @@ def import_note(note_id):
     return redirect(url_for("dashboardstud"))
 
 #-------------------------------huggingface api------------------------------------
-HUGGINGFACE_API_KEY = os.environ.get("HUGGINGFACE_API_KEY")  # Set in Replit secrets
+HUGGINGFACE_API_KEY = "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"  # Set in Replit secrets
 
 # Summarizer function
 def summarize_text(text):
