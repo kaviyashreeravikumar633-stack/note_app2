@@ -1164,3 +1164,22 @@ select:focus {
     background-color: var(--color-card-background);
     border-radius: 10px;
 }
+.study-timer {
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px solid #8A64D8;
+    border-radius: 10px;
+    width: 300px;
+    background: #f8fff8;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.study-timer h3 {
+    color: #5e35b1;
+}
+
+#countdownDisplay {
+    font-size: 2em;
+    color: #333;
+    margin-top: 10px;
+}

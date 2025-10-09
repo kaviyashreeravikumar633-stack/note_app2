@@ -31,6 +31,9 @@
                     <button class="cta-button add-note-button"> Add Note</button>
                 </a>
             </div>
+            
+
+
         </div>
 
         <ul class="notes-grid">
@@ -55,6 +58,72 @@
                 </li>
             {% endfor %}
         </ul>
+        <div class="study-timer">
+            <h3>⏳ Study Timer</h3>
+
+            <label for="timeInput">Set Time (minutes):</label>
+            <input type="number" id="timeInput" min="1" placeholder="e.g. 25">
+
+            <button id="startTimerBtn">Start</button>
+            <button id="stopTimerBtn" disabled>Stop</button>
+
+            <h2 id="countdownDisplay">00:00</h2>
+            <audio id="timerSound" src="{{ url_for('static', filename='sounds/alert.mp3') }}"></audio>
+
+        </div>
+
+        <script>
+        let timerInterval;
+        let remainingSeconds = 0;
+        const timerSound = document.getElementById("timerSound");
+
+        // Allow sound to play later by unlocking it when user first interacts
+        document.getElementById("startTimerBtn").addEventListener("click", () => {
+            const minutes = parseInt(document.getElementById("timeInput").value);
+            if (isNaN(minutes) || minutes <= 0) {
+                alert("Please enter a valid number of minutes.");
+                return;
+            }
+
+            // Unlock the sound on user action
+            timerSound.play().then(() => {
+                timerSound.pause();
+                timerSound.currentTime = 0;
+            }).catch(err => console.log("Autoplay unlock attempt:", err));
+
+            remainingSeconds = minutes * 60;
+            document.getElementById("startTimerBtn").disabled = true;
+            document.getElementById("stopTimerBtn").disabled = false;
+
+            updateDisplay();
+
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                updateDisplay();
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerSound.play(); // Now this will work
+                    alert("⏰ Time’s up! Take a short break.");
+                    document.getElementById("startTimerBtn").disabled = false;
+                    document.getElementById("stopTimerBtn").disabled = true;
+                }
+            }, 1000);
+        });
+
+        function updateDisplay() {
+            const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+            const seconds = String(remainingSeconds % 60).padStart(2, '0');
+            document.getElementById("countdownDisplay").textContent = `${minutes}:${seconds}`;
+        }
+
+        document.getElementById("stopTimerBtn").addEventListener("click", () => {
+            clearInterval(timerInterval);
+            document.getElementById("startTimerBtn").disabled = false;
+            document.getElementById("stopTimerBtn").disabled = true;
+        });
+        </script>
+        
     </div>
   </body>
 </html>
