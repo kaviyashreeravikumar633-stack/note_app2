@@ -21,38 +21,39 @@
 
             <div class="notes-list-grid">
 
-                {% for note_id, note in notes_data %}
-                    <div class="note-file-card">
+                {% for note in notes_data %}
+                  <div class="note-file-card">
+                      <div class="note-file-info">
+                          <span class="file-icon">📄</span>
+                          <span class="file-name">{{ note[1] }}</span>
+                      </div>
 
-                        <div class="note-file-info">
-                            <span class="file-icon">📄</span>
-                            <span class="file-name">{{ note }}</span>
-                        </div>
+                      <div class="note-file-actions">
+                          <a href="{{ url_for('static', filename='uploads/' ~ note[1]) }}" target="_blank" class="action-btn view-btn">
+                              View
+                          </a>
 
-                        <div class="note-file-actions">
-                            <a href="{{ url_for('static', filename='uploads/' ~ note) }}" target="_blank" class="action-btn view-btn" title="View Document">
-                                View
-                            </a>
+                          <a href="{{ url_for('static', filename='uploads/' ~ note[1]) }}" download class="action-btn download-btn">
+                              Download
+                          </a>
 
-                            <a href="{{ url_for('static', filename='uploads/' ~ note) }}" download class="action-btn download-btn" title="Download Document">
-                                Download
-                            </a>
-
-                            <form method="POST" action="{{ url_for('delete_note', note_id=note_id, unit_id=unit_id) }}" class="delete-note-form">
-                                <button type="submit" class="action-btn delete-btn-small" title="Delete Note">
-                                    Delete
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                          {% if user_role == 'teacher' %}
+                          <form method="POST" action="{{ url_for('delete_note', note_id=note[0], unit_id=unit_id) }}">
+                              <button type="submit" class="delete-btn">Delete</button>
+                          </form>
+                          {% endif %}
+                      </div>
+                  </div>
                 {% endfor %}
 
-            </div>
+                {% if not notes_data %}
+                  <p class="empty-state">No notes have been uploaded for this unit yet.</p>
+                {% endif %}
 
-            {% if not notes_data %}
-                <p class="empty-state">No notes have been uploaded for this unit yet.</p>
-            {% endif %}
 
+            
+
+           
         </main>
     </div>
 </body>

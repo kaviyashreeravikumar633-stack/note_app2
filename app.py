@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 import sqlite3
 import qrcode
 import requests
+import psycopg2
 from difflib import get_close_matches
 
 
@@ -21,15 +22,18 @@ if not os.path.exists(UPLOAD_FOLDER):
 def allowed_file(filename):
   return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS #Checks if the file has an extension (like .pdf, .jpg). Splits the filename from the right (rsplit) → "notes.pdf" → "pdf". Converts it to lowercase (lower()) and checks if it’s in the allowed list.
 
-#upload route
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+def get_conn():
+  return psycopg2.connect(DATABASE_URL, sslmode='require')
 
 # database
 def init_db():
-  conn=sqlite3.connect("notesapp.db")
+  conn=get_conn()
   c=conn.cursor()
   c.execute("""
   CREATE TABLE IF NOT EXISTS Users(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY ,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     role TEXT NOT NULL
@@ -38,46 +42,42 @@ def init_db():
 
   c.execute("""
   CREATE TABLE IF NOT EXISTS Subjects(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     name TEXT NOT NULL
   )
   """)
 
   c.execute("""
   CREATE TABLE IF NOT EXISTS Units(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    subject_id INTEGER NOT NULL,
-    units TEXT NOT NULL,
-    FOREIGN KEY (subject_id) REFERENCES Subjects(id)
+    id SERIAL PRIMARY KEY,
+    subject_id INTEGER NOT NULL REFERENCES Subjects(id),
+    units TEXT NOT NULL
   )
   """)
   c.execute("""
   CREATE TABLE IF NOT EXISTS Notes(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    notes TEXT NOT NULL,
-    unit_id INTEGER NOT NULL,
-    FOREIGN KEY (unit_id) REFERENCES Units(id)
+    id SERIAL PRIMARY KEY,
+    notes TEXT ,
+    unit_id INTEGER NOT NULL REFERENCES Units(id)
   )
   """)
 
   c.execute("""
   CREATE TABLE IF NOT EXISTS MyNotes(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    student_id INTEGER NOT NULL,
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES Users(id),
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    qr_code TEXT,  -- add this column
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES Users(id)
+    qr_code TEXT,  
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )""")
 
   c.execute("""
   CREATE TABLE IF NOT EXISTS NoteShares(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    note_id INTEGER NOT NULL,
-    token TEXT NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (note_id) REFERENCES MyNotes(id)
+    id SERIAL PRIMARY KEY,
+    note_id INTEGER NOT NULL REFERENCES MyNotes(id),
+    token TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
   )
   """)
   conn.commit()
@@ -96,7 +96,7 @@ def signi():
     username=request.form['username'] 
     password=request.form['password']
     role=request.form['role']
-    conn=sqlite3.connect("notesapp.db")
+    conn=get_conn()
     c=conn.cursor()
     c.execute("SELECT id FROM Users WHERE username=? AND password=? AND role=?",(username,password,role))
     user=c.fetchone()
@@ -117,10 +117,10 @@ def signp():
     username=request.form["username"]
     password=request.form["password"]
     role=request.form["role"]
-    conn=sqlite3.connect("notesapp.db")
+    conn=get_conn()
     c=conn.cursor()
     try:
-      c.execute("INSERT INTO Users (username,password,role) VALUES(?,?,?)",(username,password,role))
+      c.execute("INSERT INTO Users (username,password,role) VALUES(%s,%s,%s)",(username,password,role))
       conn.commit()
     except sqlite3.IntegrityError:
       return "Username already exists"
@@ -134,7 +134,7 @@ def signp():
 def dashboardteach():
   if "user_id" not in session:
     return redirect(url_for("signi"))
-  conn=sqlite3.connect("notesapp.db")
+  conn=get_conn()
   c=conn.cursor()
   c.execute("SELECT id,name FROM Subjects")
   subjects=c.fetchall()
@@ -146,10 +146,10 @@ def addsubject():
   if "user_id" not in session:
     return redirect(url_for("signi"))
   subject_name=request.form['subject_name']
-  conn=sqlite3.connect("notesapp.db")
+  conn=get_conn()
   c=conn.cursor()
   try:
-    c.execute("INSERT INTO Subjects (name) VALUES(?)",(subject_name,))
+    c.execute("INSERT INTO Subjects (name) VALUES(%s)",(subject_name,))
     conn.commit()
   except sqlite3.IntegrityError:
     return "Subject already exists"
@@ -161,10 +161,10 @@ def addsubject():
 def deletesubject(subject_id):
   if "user_id" not in session:
     return redirect(url_for("signi"))
-  conn=sqlite3.connect("notesapp.db")
+  conn=get_conn()
   c=conn.cursor()
   try:
-    c.execute("DELETE FROM Subjects WHERE id=?",(subject_id,))
+    c.execute("DELETE FROM Subjects WHERE id=%s",(subject_id,))
     conn.commit()
   except sqlite3.IntegrityError:
     return "Subject already exists"
@@ -176,9 +176,9 @@ def deletesubject(subject_id):
 def units(subject_id):
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
-  c.execute("SELECT name FROM Subjects WHERE id=?",(subject_id,))
+  c.execute("SELECT name FROM Subjects WHERE id=%s",(subject_id,))
   subject=c.fetchone()
-  c.execute("SELECT id,units FROM Units WHERE subject_id=?",(subject_id,))
+  c.execute("SELECT id,units FROM Units WHERE subject_id=%s",(subject_id,))
   Units=c.fetchall()
   conn.close()
   return render_template("units.html",Units=Units,subject_id=subject_id)
@@ -190,7 +190,7 @@ def addunits(subject_id):
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
   try:
-    c.execute("INSERT INTO Units (subject_id,units) VaLUES (?,?)", (subject_id,unitname))
+    c.execute("INSERT INTO Units (subject_id,units) VaLUES (%s,%s)", (subject_id,unitname))
     conn.commit()
   except sqlite3.IntegrityError:
     return "Unit already exists"
@@ -204,7 +204,7 @@ def deleteunits(unit_id,subject_id):
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
   try:
-    c.execute("DELETE FROM Units WHERE id=?",(unit_id,))
+    c.execute("DELETE FROM Units WHERE id=%s",(unit_id,))
     conn.commit()
   except sqlite3.IntegrityError:
     return "Unit already deleted"
@@ -230,7 +230,7 @@ def upload_note(subject_id):
 
         conn = sqlite3.connect("notesapp.db")
         c = conn.cursor()
-        c.execute("INSERT INTO Notes (notes, unit_id) VALUES (?, ?)", (filename, unit_id))
+        c.execute("INSERT INTO Notes (notes, unit_id) VALUES (%s, %s)", (filename, unit_id))
         conn.commit()
         conn.close()
 
@@ -245,7 +245,7 @@ def delete_note(note_id, unit_id):
     c = conn.cursor()
 
     # First, get the filename to remove the file from uploads
-    c.execute("SELECT notes FROM Notes WHERE id=?", (note_id,))
+    c.execute("SELECT notes FROM Notes WHERE id=%s", (note_id,))
     row = c.fetchone()
     if row:
         filename = row[0]
@@ -254,7 +254,7 @@ def delete_note(note_id, unit_id):
             os.remove(filepath)
 
     # Delete from database
-    c.execute("DELETE FROM Notes WHERE id=?", (note_id,))
+    c.execute("DELETE FROM Notes WHERE id=%s", (note_id,))
     conn.commit()
     conn.close()
 
@@ -269,13 +269,13 @@ def notes(unit_id):
     return redirect(url_for("signi"))
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
-  c.execute("SELECT units,subject_id FROM Units WHERE id=?",(unit_id,))
+  c.execute("SELECT units,subject_id FROM Units WHERE id=%s",(unit_id,))
   row=c.fetchone()
   if not row:
     conn.close()
     return "Note is not found"
   unit_name,subject_id=row
-  c.execute("SELECT id,notes FROM Notes WHERE unit_id=?",(unit_id,))
+  c.execute("SELECT id,notes FROM Notes WHERE unit_id=%s",(unit_id,))
   notes_data=c.fetchall()
 
   conn.close()
@@ -295,7 +295,7 @@ def dashboardstud():
   student_id=session["user_id"]
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
-  c.execute("SELECT id,title,content,created_at,qr_code FROM  MyNotes WHERE student_id=?",(student_id,))
+  c.execute("SELECT id,title,content,created_at,qr_code FROM  MyNotes WHERE student_id=%s",(student_id,))
   notes=c.fetchall()
   conn.close()
   return render_template("dashboardstudent.html",notes=notes,student_id=student_id)
@@ -316,9 +316,9 @@ def student():
 def unitsstud(subject_id):
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
-  c.execute("SELECT name FROM Subjects WHERE id=?",(subject_id,))
+  c.execute("SELECT name FROM Subjects WHERE id=%s",(subject_id,))
   subject=c.fetchone()
-  c.execute("SELECT id,units FROM Units WHERE subject_id=?",(subject_id,))
+  c.execute("SELECT id,units FROM Units WHERE subject_id=%s",(subject_id,))
   Units=c.fetchall()
   conn.close()
   return render_template("unitsstud.html",Units=Units,subject_id=subject_id)
@@ -330,13 +330,13 @@ def notesstud(unit_id):
     return redirect(url_for("signi"))
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
-  c.execute("SELECT units,subject_id FROM Units WHERE id=?",(unit_id,))
+  c.execute("SELECT units,subject_id FROM Units WHERE id=%s",(unit_id,))
   row=c.fetchone()
   if not row:
     conn.close()
     return "Note is not found"
   unit_name,subject_id=row
-  c.execute("SELECT id,notes FROM Notes WHERE unit_id=?",(unit_id,))
+  c.execute("SELECT id,notes FROM Notes WHERE unit_id=%s",(unit_id,))
   notes_data=c.fetchall()
   conn.close()
   user_role=session.get("role","student")
@@ -353,7 +353,7 @@ def add_note(student_id):
     content=request.form['content']
     conn=sqlite3.connect("notesapp.db")
     c=conn.cursor()
-    c.execute("INSERT INTO MyNotes(student_id,title,content) VALUES(?,?,?)",(student_id,title,content))
+    c.execute("INSERT INTO MyNotes(student_id,title,content) VALUES(%s,%s,%s)",(student_id,title,content))
     conn.commit()
 
     note_id=c.lastrowid
@@ -369,7 +369,7 @@ def add_note(student_id):
 
     conn = sqlite3.connect("notesapp.db")
     c = conn.cursor()
-    c.execute("UPDATE MyNotes SET qr_code=? WHERE id=?", (qr_db_path, note_id))
+    c.execute("UPDATE MyNotes SET qr_code=%s WHERE id=%s", (qr_db_path, note_id))
     conn.commit()
     conn.close()
     return redirect(url_for("dashboardstud"))
@@ -380,7 +380,7 @@ def add_note(student_id):
 def view_note(note_id):
     conn = sqlite3.connect("notesapp.db")
     c = conn.cursor()
-    c.execute("SELECT title, content, created_at FROM MyNotes WHERE id=?", (note_id,))
+    c.execute("SELECT title, content, created_at FROM MyNotes WHERE id=%s", (note_id,))
     note = c.fetchone()
     conn.close()
 
@@ -395,7 +395,7 @@ def view_note(note_id):
 def delete_note_student(note_id,student_id):
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
-  c.execute("DELETE FROM MyNotes WHERE id=? AND student_id=?",(note_id,student_id))
+  c.execute("DELETE FROM MyNotes WHERE id=%s AND student_id=%s",(note_id,student_id))
   conn.commit()
   conn.close()
   return redirect(url_for("dashboardstud",student_id=student_id))
@@ -408,7 +408,7 @@ def update_note(note_id):
   student_id=request.form['student_id']
   conn=sqlite3.connect("notesapp.db")
   c=conn.cursor()
-  c.execute("UPDATE MyNotes SET title=?,content=? WHERE id=?",(title,content,note_id))
+  c.execute("UPDATE MyNotes SET title=%s,content=%s WHERE id=%s",(title,content,note_id))
   conn.commit()
   conn.close()
   return redirect(url_for("dashboardstud",student_id=student_id))
@@ -418,7 +418,7 @@ def update_note(note_id):
 def edit_note(note_id):
     conn = sqlite3.connect("notesapp.db")
     c = conn.cursor()
-    c.execute("SELECT id, title, content, student_id FROM MyNotes WHERE id=?", (note_id,))
+    c.execute("SELECT id, title, content, student_id FROM MyNotes WHERE id=%s", (note_id,))
     note = c.fetchone()
     conn.close()
     if not note:
@@ -443,7 +443,7 @@ def import_note(note_id):
     c = conn.cursor()
 
     # Get the note data
-    c.execute("SELECT title, content FROM MyNotes WHERE id=?", (note_id,))
+    c.execute("SELECT title, content FROM MyNotes WHERE id=%s", (note_id,))
     note = c.fetchone()
 
     if not note:
@@ -453,7 +453,7 @@ def import_note(note_id):
     title, content = note
 
     # Insert into the current student's notes
-    c.execute("INSERT INTO MyNotes (student_id, title, content) VALUES (?, ?, ?)",
+    c.execute("INSERT INTO MyNotes (student_id, title, content) VALUES (%s, %s, %s)",
               (student_id, title, content))
     conn.commit()
     conn.close()
@@ -500,7 +500,7 @@ def ai_chat(note_id):
 
     conn = sqlite3.connect("notesapp.db")
     c = conn.cursor()
-    c.execute("SELECT content FROM MyNotes WHERE id=?", (note_id,))
+    c.execute("SELECT content FROM MyNotes WHERE id=%s", (note_id,))
     row = c.fetchone()
     conn.close()
 
@@ -538,4 +538,6 @@ def ai_chat(note_id):
 
 
 if __name__ == '__main__':
- app.run(host='0.0.0.0', port=8080, debug=True)
+  import os
+  port = int(os.environ.get('PORT', 5000))
+  app.run(host='0.0.0.0', port=port)
